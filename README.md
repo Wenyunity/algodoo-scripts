@@ -61,4 +61,4 @@ Notes: If you want to change color, also do e.this.color = e.other.color
 ~~~
 e.this._name = math.toString(math.toInt(e.this.colorHSVA(0)) * 10000 + math.toInt(e.this.colorHSVA(1) * 99) * 100 + math.toInt(e.this.colorHSVA(2) * 99))
 ~~~
-Notes: Collisions are if S = 0 or 1 and V = 0 or 1. A (Transparency) is not factored in to the automatic naming.
+Notes: S = 0 or 1, as well as V = 0 or 1 with the same H will cause name collisions. A (Transparency) is not factored in to the automatic naming, so changing only A will cause name collisions.
