@@ -24,34 +24,45 @@ The scoreboard needs e.this.\_name to function.
 
 # Functions
 
-## Add Score (Via OnCollide): 
+## Add Score (Via OnCollide)
 ~~~
 eval("Scene.my.Point" + e.other._name + " = Scene.my.Point" + e.other._name + " + " + e.this._pointGain)
 ~~~
-Notes: Replace other with geom if using lasers, or replace with this if marbles are adding to their own score. Replace the underlined + with a - if wanting to subtract points instead.
+Used to add score to the marble that hits the point-giver. 
 
-## Set Score(Via OnCollide):
+Adjustments: Replace other with geom if using lasers, or replace with this if marbles are adding to their own score. Replace the second-to-last + with - if subtracting score instead.
+
+## Set Score(Via OnCollide)
 ~~~
 eval("Scene.my.Point" + e.other._name + " = “ + e.this._pointSet)
 ~~~
-Notes: Replace other with geom if using lasers, or replace with this if marbles are adding to their own score.
+Used to set a marble's score to a certain number when hitting the object that has it.
 
-### Display Text (Integer):
+Adjustments: Replace other with geom if using lasers, or replace with this if marbles are adding to their own score.
+
+## Display Text
+These should be used to display each marble's individual score.
+
+### Integer Text
 ~~~
 e.this.text = Math.toString(Math.toInt(eval("Scene.my.Point" + e.this._name)))
 ~~~
+Truncates past the integer. EX: -0.9 -> 0; 0.9 -> 0; 1.9 -> 1; -1.9 -> -1.
 
-### Display Text (Full):
+### Full Text
 ~~~
 e.this.text = Math.toString(eval("Scene.my.Point" + e.this._name))
 ~~~
+Not recommended due to the length of the text changing often.
 
-### Display Text (2 Decimals):
+### 2 Decimals
 ~~~
 e.this.text = Math.toString(Math.toInt(eval("Scene.my.Point" + e.this._name) * 100) / 100.0)
 ~~~
+Truncates past the second decimal.
 
-## Share Name:
+
+## Share Name
 ~~~
 e.this._name = e.other._name
 ~~~
