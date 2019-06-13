@@ -1,6 +1,8 @@
-# Algodoo Scoreboard
+# algodoo-eval-scoreboard
 
-This is the setup that WuigiBaka uses for their marble events.
+Snippets of Algodoo code used by WuigiBaka will be posted here.
+
+WuigiBaka's YouTube: https://www.youtube.com/c/WuigiBaka
 
 # Basic Setup
 
