@@ -3,7 +3,7 @@
 Some functions that work but don't need the use of README.md
 
 # Integer Aligning
-Aligns objects to the nearest integer. Aligning along zero is not a good idea.
+Aligns objects to the nearest integer. Aligning across x = 0 or y = 0 is not recommended because toInt rounds by truncation.
 ~~~
 pos = [math.toint(pos(0)), math.toint(pos(1))]
 ~~~
@@ -11,7 +11,7 @@ pos = [math.toint(pos(0)), math.toint(pos(1))]
 # Teleport (With slightly random position)
 Scene.my.restartPoint = The center of the possible teleportation.
 
-Replace the 4.0 with the desired side-length of the teleportation distance. Both sides do not have to be the same number.
+Replace the 4.0 with the desired side-length of the teleportation variance. Both sides do not have to be the same number.
 ~~~
 e.other.pos = Scene.my.restartPoint + [(rand.uniform01 - 0.5) * 4.0, (rand.uniform01 - 0.5) * 4.0]
 ~~~
@@ -26,7 +26,7 @@ Scene.my.timer = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "1
 
 ### In postStep
 ~~~
-e.this.text = math.toString(math.toInt(sim.time / 60)) + ":" + scene.my.timer(math.toInt(sim.time % 60)) + "." + math.toString(math.toInt((sim.time % 1) * 10))
+e.this.text = math.toString(math.toInt(sim.time / 60)) + ":" + Scene.my.timer(math.toInt(sim.time % 60)) + "." + math.toString(math.toInt((sim.time % 1) * 10))
 ~~~
 
 # WuigiBaka's Countdown Timer
