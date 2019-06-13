@@ -1,3 +1,7 @@
+# Algodoo Scoreboard
+
+This is the setup that WuigiBaka uses for their marble events.
+
 # Basic Setup
 
 e.this.\_name: Used as an identifier. Marbles sharing the same name will share the same score.
