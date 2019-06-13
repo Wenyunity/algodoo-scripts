@@ -4,6 +4,8 @@ Snippets of Algodoo code used by WuigiBaka will be posted here.
 
 WuigiBaka's YouTube: https://www.youtube.com/c/WuigiBaka
 
+The rest of this ReadMe is the setup for WuigiBaka's Eval Scoreboard.
+
 # Basic Setup
 
 e.this.\_name: Used as an identifier. Marbles sharing the same name will share the same score.
@@ -26,13 +28,13 @@ Point Givers need e.this.\_pointGain to function. They do not need e.this.\_name
 
 The scoreboard needs e.this.\_name to function.
 
-# Functions
+# Main Functions
 
 ## Add Score (Via OnCollide)
 ~~~
 eval("Scene.my.Point" + e.other._name + " = Scene.my.Point" + e.other._name + " + " + e.this._pointGain)
 ~~~
-Used to add score to the marble that hits the point-giver. 
+Used to add score to the marble that hits the point giver. 
 
 Adjustments: Replace other with geom if using lasers, or replace with this if marbles are adding to their own score. Replace the second-to-last + with - if subtracting score instead.
 
@@ -70,10 +72,14 @@ Truncates past the second decimal.
 ~~~
 e.this._name = e.other._name
 ~~~
+Used if you don't want your marbles directly interacting with the point givers.
+
 Notes: If you want to change color, also do e.this.color = e.other.color
 
 ## Automatic Naming
 ~~~
 e.this._name = math.toString(math.toInt(e.this.colorHSVA(0)) * 10000 + math.toInt(e.this.colorHSVA(1) * 99) * 100 + math.toInt(e.this.colorHSVA(2) * 99))
 ~~~
-Notes: S = 0 or 1, as well as V = 0 or 1 with the same H will cause name collisions. A (Transparency) is not factored in to the automatic naming, so changing only A will cause name collisions.
+Can be used if your marbles are not named. Putting this in OnSpawn will automatically name your marbles and scoreboard, so long as the scoreboard's color is the same as the marble's color.
+
+Notes: Using HSVA -> S = 0 or 1, as well as V = 0 or 1 with the same H will cause name collisions. A (Transparency) is not factored in to the automatic naming, so changing only A will cause name collisions.
