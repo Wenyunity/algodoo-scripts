@@ -38,7 +38,7 @@ eval("Scene.my.Point" + e.other._name + " = Scene.my.Point" + e.other._name + " 
 
 Alternative for non-integer:
 ~~~
-e.this._pointGain = math.toInt(e.other.pos(0));
+e.this._pointGain = e.other.pos(0);
 eval("Scene.my.Point" + e.other._name + " = Scene.my.Point" + e.other._name + " + " + e.this._pointGain)
 ~~~
 Put a teleport after the function so that the marbles do not hit multiple times.
@@ -85,3 +85,12 @@ In Tour Season 2, this is the code I used:
 The section in the eval just sets e.this._win to true if the marble meets the score, or false if they do not. I did this to make the if statement as short as possible.
 
 If the marble does meet the score, they're teleported to the exit; if it doesn't, they switch to a collideSet that does not include Collision Layer B. The Score Checker is only on Collision Layer B.
+
+# Marble Painting (OnCollide)
+For paint wars, use this for the objects to be painted.
+~~~
+eval("Scene.my.Point" + e.this._name + " = Scene.my.Point" + e.this._name + " -1");
+e.this._name = e.other._name;
+e.this.color = e.other.color;
+eval("Scene.my.Point" + e.other._name + " = Scene.my.Point" + e.other._name + " +1")
+~~~
