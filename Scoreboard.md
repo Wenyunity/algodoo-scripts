@@ -1,5 +1,3 @@
-# algodoo-eval-scoreboard
-
 # Basic Setup
 
 e.this.\_name: Used as an identifier. Marbles sharing the same name will share the same score.
