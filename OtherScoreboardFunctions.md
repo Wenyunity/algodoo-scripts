@@ -102,12 +102,12 @@ Scene.my.finishScore: The score at which the bar will be at finishSize.
 
 Scene.my.finishSize: The height of the bar when the score is equal to finishScore.
 
-onSpawn:
+### onSpawn:
 ~~~
 e.this._zeroY = e.this.pos(1)
 ~~~
 
-postStep:
+### postStep:
 ~~~
 eval("e.this.size = [e.this.size(0), 1 + Scene.my.finishSize*Math.toInt(Scene.my.Point" + e.this.name + ")/ Scene.my.finishScore]");
 eval("e.this.pos = [e.this.pos(0), e.this._zeroY + (Scene.my.finishSize / 2) * Math.toInt(Scene.my.Point" + e.this.name + ")/ Scene.my.finishScore]")
@@ -115,13 +115,27 @@ eval("e.this.pos = [e.this.pos(0), e.this._zeroY + (Scene.my.finishSize / 2) * M
 
 Horizontal version (to the right):
 
-onSpawn:
+### onSpawn:
 ~~~
 e.this._zeroX = e.this.pos(0)
 ~~~
 
-postStep:
+### postStep:
 ~~~
 eval("e.this.size = [1 + Scene.my.finishSize*Math.toInt(Scene.my.Point" + e.this.name + ")/ Scene.my.finishScore, e.this.size(1)]");
 eval("e.this.pos = [e.this._zeroX + (Scene.my.finishSize / 2) * Math.toInt(Scene.my.Point" + e.this.name + ")/ Scene.my.finishScore, e.this.pos(0)]")
+~~~
+
+# Points-to-Text (OnKey)
+When the up arrow key is pressed, this activates. It sets the text to the current score.
+~~~
+keys.isdown("up") ? {
+    eval("e.this.text = Math.toString(Scene.my.Point" + e.this.name + ")")
+} : {}
+~~~~
+Notes: This was used in Trials to automate the Point-Givers in the intro. Their OnSpawn would set their point value equal to their text, and combined with the Points-to-Text removed the manual typing of each marble's lives.
+
+### Trials Function (OnSpawn)
+~~~
+e.this._pointGain = Math.toInt(e.this.text);
 ~~~
