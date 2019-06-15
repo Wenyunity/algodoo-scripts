@@ -94,3 +94,34 @@ e.this._name = e.other._name;
 e.this.color = e.other.color;
 eval("Scene.my.Point" + e.other._name + " = Scene.my.Point" + e.other._name + " +1")
 ~~~
+
+# Bar Graph
+Shows each marble's progress in a bar.
+
+Scene.my.finishScore: The score at which the bar will be at finishSize.
+
+Scene.my.finishSize: The height of the bar when the score is equal to finishScore.
+
+onSpawn:
+~~~
+e.this._zeroY = e.this.pos(1)
+~~~
+
+postStep:
+~~~
+eval("e.this.size = [e.this.size(0), 1 + Scene.my.finishSize*Math.toInt(Scene.my.Point" + e.this.name + ")/ Scene.my.finishScore]");
+eval("e.this.pos = [e.this.pos(0), e.this._zeroY + (Scene.my.finishSize / 2) * Math.toInt(Scene.my.Point" + e.this.name + ")/ Scene.my.finishScore]")
+~~~
+
+Horizontal version (to the right):
+
+onSpawn:
+~~~
+e.this._zeroX = e.this.pos(0)
+~~~
+
+postStep:
+~~~
+eval("e.this.size = [1 + Scene.my.finishSize*Math.toInt(Scene.my.Point" + e.this.name + ")/ Scene.my.finishScore, e.this.size(1)]");
+eval("e.this.pos = [e.this._zeroX + (Scene.my.finishSize / 2) * Math.toInt(Scene.my.Point" + e.this.name + ")/ Scene.my.finishScore, e.this.pos(0)]")
+~~~
