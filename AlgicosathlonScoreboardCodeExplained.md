@@ -178,36 +178,65 @@ This is the exact same as the number's positioning code except we place it to th
 ```
 The size code and the positioning code combine such that the bar looks like it's only increasing from the right side. The multiplication by 1.0 and 2.0 are to prevent integer division from happening.
 
+## Sorter
+
+### Code
+
+`Scene.my.Beats` counts what place the marble will be in, but multiplied by negative 1 (so that first is on top and last is on the bottom.)
+
+#### Main Comparison
+```
+    (eval("Scene.my.Point" + e.this._name + " < Scene.my.Point" + e.other._name)) ? {
+        eval("Scene.my.Beats" + e.this._name + " = Scene.my.Beats" + e.this._name + " - 1")
+    } : {};
+```
+This one checks if the score of the sorter bar is less than the score of the marble hitting it. If so, it subtracts 1, since the sorter has been beat.
+
+#### Tiebreaker
+```
+    (eval("Scene.my.Point" + e.this._name + " == Scene.my.Point" + e.other._name)) ? {
+        e.this._name > e.other._name ? {} : {
+            eval("Scene.my.Beats" + e.this._name + " = Scene.my.Beats" + e.this._name + " - 1")
+        }
+    } : {};
+    e.other.pos = e.other.pos - [0, 3]
+```
+In the case of the sorter bar and the marble having the same score, we use the names as a tiebreaker, since all athletes have unique names. If the name is earlier (by lexicographical sorting), then for the purposes of the tiebreaker, the sorter loses.
+
+In the case that the sorter bar and the marble are the same, the sorter bar considers it a loss. This is because placement starts at 1; it ensures that first is properly placed at -1, and so on.
+
+The last line of code just moves the marble down to the next sorter.
+
+## Add Score
+
+### Code
+```
+    e.other.pos = e.other.pos - [0, 3];
+    eval("Scene.my.Point" + e.other._name + " = Scene.my.Point" + e.other._name + " + " + e.this._pointGain);
+    eval("Scene.my.Point" + e.other._name) > Scene.my.finishScore ? {
+        Scene.my.finishScore = eval("Scene.my.Point" + e.other._name)
+    } : {}
+```
+This code moves the marble down, adds the score to the marble's Point, and updates finishScore if a marble's score is higher than the current finishScore.
+
+The ELIM box is the same, except it removes the score addition.
+
 # Old Code
 
-Probably to be deleted.
-
-## Text Display
-~~~
-eval("Scene.my.Display" + e.this._name + " = Math.toint(e.this.text)")
-~~~
-
-## Counting How Many Marbles are Ahead
-~~~
-eval("Scene.my.Point" + e.this._name + " < Scene.my.Point" + e.other._name + " ? {Scene.my.Beats" + e.this._name + " = Scene.my.Beats" + e.this._name + " - 1} : {}");
-~~~
-
-## Tiebreaker for Marbles Ahead
-~~~
-eval("Scene.my.Point" + e.this._name + " == Scene.my.Point" + e.other._name + " ? {" + e.this._name + " > " + e.other._name + " ? {} : {Scene.my.Beats" + e.this._name + " = Scene.my.Beats" + e.this._name + " - 1}} : {}")
-~~~
-
-## Marbles Ahead Text
-~~~
-e.this.text = Math.toString(eval("Scene.my.Beats" + e.this._name))
-~~~
+This code ha been removed because it added variables that were not necessary.
 
 ## Increase Displayed Score (For Animations) (Not Final)
-~~~
+```
 eval("Scene.my.Display" + e.this._name + " > Scene.my.Point" + e.this._name + " ? {Scene.my.Display" + e.this._name + " = Scene.my.Display" + e.this._name + " + Scene.my.Increase" + e.this._name + " / (Scene.my.numSeconds * 1.0)} : {}")
-~~~
+```
+This one increases the display score by Scene.my.Increase (which was Point - Display) divided by the number of seconds. While this does work, it desyncs the Increase from the animation timer. Float inefficiencies can cause the increase to lag behind the animation timer.
+
+Also, there wasn't a failsafe installed here, meaning float inefficiencies could cause the score to be higher than initially reported.
 
 ## Move Bars Up And Down
-~~~
+```
 eval("e.this.pos(1) - (Scene.my.Beats" + e.this._name + ") < 0.0001 && e.this.pos(1) - (Scene.my.Beats" + e.this._name + ") > (-0.0001) ?  {Scene.my.Current" + e.this._name + " = Scene.my.Beats" + e.this._name + "}  : {Scene.my.Current" + e.this._name + " = Scene.my.Current" + e.this._name + " + (((e.this._changeY) * 1.0) / (Scene.my.numSeconds * 1.0))}")
-~~~
+```
+This one is very similar to above code, because it takes the amount it "should" move per frame using various factors. Again, it's desynced from the animation timer.
+
+The good news is, this one does have an if statement, and a failsafe, which means that (given the time), it should end up in the correct position. However; the if statement might not work if the bar moves too fast.
