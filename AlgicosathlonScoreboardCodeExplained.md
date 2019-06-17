@@ -101,6 +101,91 @@ Similarly, this piece of code just cleans up stuff for the next time around and 
 ```
 Scene.my.done is just a cleanup stage, so it does not need to last for very long. It lasts long enough to get the cleanup message out to the other interested parties, and then it turns itself off.
 
+## Scoreboard Movement
+
+#### Variables
+
+- `Scene.my.Display (+ _name)` holds the current display score.
+- `Scene.my.Initial (+ _name)` holds the name of the previous score, before the event.
+- `Scene.my.Point (+ _name)` holds the name of the score after the event.
+- `Scene.my.Current (+ _name)` holds the current Y-Position of the bar.
+- `Scene.my.Beats (+ _name)` holds the place of the athlete after the event.
+- `e.this._originalY` holds the place of the athlete before the event.
+
+### Code
+
+#### Text
+```
+    eval("Scene.my.Point" + e.this._name) < 10 ? {
+        e.this.size = [1.1, 1]
+    } : {
+        eval("Scene.my.Point" + e.this._name) < 100 ? {
+            e.this.size = [1.7, 1]
+        } : {
+            eval("Scene.my.Point" + e.this._name) < 1000 ? {
+                e.this.size = [2.3, 1]
+            } : {
+                e.this.size = [2.9, 1]
+            }
+        }
+    };
+```
+In order to simulate right-align text the best I could, I change the size of the text bar when more digits are necessary. It's not perfect, as it sets the text based on Scene.my.Point, but Scene.my.Display doesn't work.
+
+#### Position
+```
+    eval("e.this.pos = [Scene.my.finishSize*(Scene.my.Display" + e.this._name + ")/ (Scene.my.finishScore * 1.0), Scene.my.Current" + e.this._name + "] - [e.this.size(0) / 2, 0]");
+```
+The order of the code matters here. If this was placed after the following code, the number would be 1 frame "ahead" of the rest of it.
+
+#### Horizontal Movement
+```
+    Scene.my.playAnimation ? {
+        e.this.text = "<markup><b>" + Math.toString(Math.toInt(eval("Scene.my.Display" + e.this._name))) + "</b></markup>";
+        Scene.my.animationTime < 1 ? {
+            eval("Scene.my.Display" + e.this._name + " = (Scene.my.Initial" + e.this._name + " * (1.0 - Scene.my.animationTime)) +  (Scene.my.Point" + e.this._name + " * (Scene.my.animationTime))")
+        } : {
+            eval("Scene.my.Display" + e.this._name + " = Scene.my.Point" + e.this._name)
+        }
+    } : {};
+```
+The first line in this if statement updates the text. Since this is the only time the text needs updating, it can safely be placed here without worry.
+
+Scene.my.Display is calculated as follows: Initial * (1 - animationTime) + Point * (animationTime). This means, when the animation has begun (animationTime = 0), it'll be at the Initial position, while when the animation is over (animationTime = 1), it'll be at the Point position. In between, it takes the proper ratio between the two positions.
+
+#### Vertical Movement
+```
+    Scene.my.playSwap ? {
+        Scene.my.animationTime < 1 ? {
+            eval("Scene.my.Current" + e.this._name + " = ((e.this._originalY) * (1.0 - Scene.my.animationTime2)) +  ((Scene.my.Beats" + e.this._name + ") * (Scene.my.animationTime2))")
+        } : {
+            eval("Scene.my.Current" + e.this._name + " = Scene.my.Beats" + e.this._name)
+        }
+    } : {};
+```
+The vertical movement is calculated in the exact same way as the horizontal movement and makes for linear movement between the starting position and the desired finishing position.
+
+#### Cleanup
+```
+    Scene.my.done ? {
+        e.this._originalY = e.this.pos(1);
+        eval("Scene.my.Current" + e.this._name + " = e.this.pos(1)")
+    } : {}
+```
+Setting variables up that will be used for future runs.
+
+### Namebar Code
+```
+    eval("e.this.pos = [Scene.my.finishSize*(Scene.my.Display" + e.this._name + ")/ (Scene.my.finishScore * 1.0), Scene.my.Current" + e.this._name + "] + [e.this.size(0) / 2, 0]")
+```
+This is the exact same as the number's positioning code except we place it to the right by adding half of the X-size instead of subtracting half of it.
+
+### Bar Code
+```
+   eval("e.this.size = [1 + Scene.my.finishSize*(Scene.my.Display" + e.this._name + ")/ (Scene.my.finishScore * 1.0), e.this.size(1)]");
+    eval("e.this.pos = [- 0.5 + (Scene.my.finishSize * Scene.my.Display" + e.this._name + " * 1.0) / (Scene.my.finishScore * 2.0), Scene.my.Current" + e.this._name + "]")
+```
+The size code and the positioning code combine such that the bar looks like it's only increasing from the right side. The multiplication by 1.0 and 2.0 are to prevent integer division from happening.
 
 # Old Code
 
