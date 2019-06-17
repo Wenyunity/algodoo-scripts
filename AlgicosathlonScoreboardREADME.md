@@ -2,6 +2,15 @@
 
 How to use the AlgiosathlonScoreboard.
 
+## What is This?
+
+This is a scoreboard that aims to be similar to carykh's original Algicosathlon scoreboard.
+The only thing that hasn't been added directly is the ELIMINATED bar.
+
+#### So, should I use it?
+
+It's a pretty solid scoreboard. If you don't have anything better, go ahead.
+
 ## General Notes
 
 Do not remove eliminated marbles from the scoring.
@@ -47,6 +56,6 @@ Copying and pasting does work, and is highly recommended. Changing the color (al
 In order to add another contestant, they will need the following. Change **all items to the desired color.**
 
 - A Scoreboard Bar. **Make Sure ALL three boxes have the desired color.**
-- A sorter Bar. If you add a lot of contestants, you'll need to move the Event score upwards (and possibly expand the sorter horizontally.
+- A sorter Bar. If you add a lot of contestants, you'll need to move the Event score upwards (and possibly expand the sorter horizontally).
 - An Initial Score.
 - A marble.
