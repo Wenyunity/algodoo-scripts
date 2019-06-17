@@ -221,9 +221,21 @@ This code moves the marble down, adds the score to the marble's Point, and updat
 
 The ELIM box is the same, except it removes the score addition.
 
+# How It Runs
+
+- Step 1: Initial Score is added to Scene.my.Initial, Scene.my.Display, and Scene.my.Score.
+- Step 2: Marbles add their event score to Scene.my.Score.
+- Step 3: Using Scene.my.Score, the marbles go through the sorter, which finds out Scene.my.Beats for each athlete.
+- Step 4: The marbles activate Scene.my.playAnimation.
+- Step 5: Scene.my.Display is updated during the animation. At the end, it matches Scene.my.Score. Since the scoreboard uses Scene.my.Display, the result is a transition between Scene.my.Initial and Scene.my.Score.
+- Step 6: Scene.my.playAnimation ends, starting Scene.my.swapAnimation.
+- Step 7: The bars move to their proper places, using Scene.my.Beats to know where they're going to end up. Scene.my.Current is used to have a smooth transition from their original place to their new place.
+- Step 8: Scene.my.swapAnimation ends, starting Scene.my.done.
+- Step 9: Variables are reset. Scene.my.Initial is updated to Scene.my.Score.
+
 # Old Code
 
-This code ha been removed because it added variables that were not necessary.
+This code had been removed because it added variables that were not necessary.
 
 ## Increase Displayed Score (For Animations) (Not Final)
 ```
