@@ -28,66 +28,50 @@ Combined with eval(), this allows me to reuse code for each marble while not usi
 - `Scene.my.finishScore` is the score of the first place athlete.
 - `Scene.my.animationTime` goes from 0 to 1 and determines where the bars are in the horizontal animation.
 - `Scene.my.animationTime2` goes from 0 to 1 and determines where the bars are in the vertical swap animation.
-- `e.this._timer, e.this._timer2, e.this._timer3,` are timers for all three animations.
-- `e.this._start1, e.this._start2` determine whether the animation has just started or is progressing.
 
 ### Code
 
 #### Horizontal Movement
 ```
     Scene.my.playAnimation ? {
-        e.this._timer = e.this._timer + (1.0 / (Scene.my.numSeconds * Sim.frequency * 1.0));
         e.this._start1 ? {
             Scene.my.startTime = sim.time;
             e.this._start1 = false
         } : {
             Scene.my.animationTime = (sim.time - Scene.my.startTime) / (Scene.my.numSeconds * 1.0)
         };
-        Scene.my.animationTime > 1.0 ? {
-            Scene.my.animationTime = 1.0
+        Scene.my.animationTime > 1.1 ? {
+            Scene.my.playAnimation = false;
+            Scene.my.playSwap = true;
+            e.this._start1 = true;
+            Scene.my.animationTime2 = 0.0
         } : {}
     } : {};
 ```
-This piece of code updates where the bars are in their animation using Scene.my.animationTime. It goes from 0 (when sim.time = Scene.my.startTime) up to 1. Scene.my.numSeconds is used to determine how long going from 0 to 1 takes.
-```
-    e.this._timer >= 1.01 ? {
-        Scene.my.playAnimation = false;
-        Scene.my.playSwap = true;
-        e.this._timer = 0;
-        e.this._start1 = true;
-        Scene.my.animationTime = 0.0
-    } : {};
-```
-This piece of code resets everything for playAnimation and starts playSwap.
+This piece of code updates where the bars are in their animation using Scene.my.animationTime. e.this.\_start1 is used to determine whether we're on the first frame of the animation and to set SetartTime. After that, Scene.my.animationTime goes from 0 to 1, using Scene.my.numSeconds to determine how long that should take. Once Scene.my.animationTime goes above 1.1 (some delay is necessary), it switches to the vertical swapping section.
 
 #### Vertical Swapping
 ```
     Scene.my.playSwap ? {
-        e.this._timer2 = e.this._timer2 + (1.0 / (Scene.my.swapSeconds * Sim.frequency * 1.0));
         e.this._start2 ? {
             Scene.my.startTime2 = sim.time;
             e.this._start2 = false
         } : {
             Scene.my.animationTime2 = (sim.time - Scene.my.startTime2) / (Scene.my.swapSeconds * 1.0)
         };
-        Scene.my.animationTime2 > 1.0 ? {
-            Scene.my.animationTime2 = 1.0
+        Scene.my.animationTime2 > 1.1 ? {
+            Scene.my.playSwap = false;
+            Scene.my.done = true;
+            e.this._start2 = true
         } : {}
+    } : {};
+    Scene.my.done ? {
+        e.this._timer3 = e.this._timer3 + 1
     } : {};
 ```
 This is mostly the same as the piece of code in the horizontal version.
 
-This piece of code updates where the bars are in their animation using Scene.my.animationTime2. It goes from 0 (when sim.time = Scene.my.startTime2) up to 1. Scene.my.swapSeconds is used to determine how long going from 0 to 1 takes.
-```
-    e.this._timer2 >= 1.01 ? {
-        e.this._timer2 = 0;
-        Scene.my.playSwap = false;
-        Scene.my.done = true;
-        e.this._start2 = true;
-        Scene.my.animationTime2 = 0.0
-    } : {};
-```
-Similarly, this piece of code just cleans up stuff for the next time around and starts Scene.my.done
+This piece of code updates where the bars are in their animation using Scene.my.animationTime2. It goes from 0 (when sim.time = Scene.my.startTime2) up to 1. Scene.my.swapSeconds is used to determine how long going from 0 to 1 takes. After that, it starts the cleanup function with Scene.my.done.
 
 #### Cleanup Code
 ```
@@ -95,6 +79,8 @@ Similarly, this piece of code just cleans up stuff for the next time around and 
         e.this._timer3 = e.this._timer3 + 1
     } : {};
     e.this._timer3 > 4 ? {
+        Scene.my.animationTime2 = 0.0;
+        Scene.my.animationTime = 0.0;
         Scene.my.done = false;
         e.this._timer3 = 0
     } : {}
@@ -102,6 +88,8 @@ Similarly, this piece of code just cleans up stuff for the next time around and 
 Scene.my.done is just a cleanup stage, so it does not need to last for very long. It lasts long enough to get the cleanup message out to the other interested parties, and then it turns itself off.
 
 ## Scoreboard Movement
+
+The main chunk of the code is handled by the number on the scoreboard.
 
 #### Variables
 
@@ -116,27 +104,30 @@ Scene.my.done is just a cleanup stage, so it does not need to last for very long
 
 #### Text
 ```
-    eval("Scene.my.Point" + e.this._name) < 10 ? {
+    eval("Scene.my.Display" + e.this._name) < 10 ? {
         e.this.size = [1.1, 1]
     } : {
-        eval("Scene.my.Point" + e.this._name) < 100 ? {
+        eval("Scene.my.Display" + e.this._name) < 100 ? {
             e.this.size = [1.7, 1]
         } : {
-            eval("Scene.my.Point" + e.this._name) < 1000 ? {
+            eval("Scene.my.Display" + e.this._name) < 1000 ? {
                 e.this.size = [2.3, 1]
             } : {
                 e.this.size = [2.9, 1]
             }
         }
     };
+    textScale = 1.1;
 ```
-In order to simulate right-align text the best I could, I change the size of the text bar when more digits are necessary. It's not perfect, as it sets the text based on Scene.my.Point, but Scene.my.Display doesn't work.
+In order to simulate right-align text the best I could, I change the size of the text bar when more digits are necessary.
+
+textScale is a fallback incase switching digits causes the text size to decrease; it will increase the size back.
 
 #### Position
 ```
     eval("e.this.pos = [Scene.my.finishSize*(Scene.my.Display" + e.this._name + ")/ (Scene.my.finishScore * 1.0), Scene.my.Current" + e.this._name + "] - [e.this.size(0) / 2, 0]");
 ```
-The order of the code matters here. If this was placed after the following code, the number would be 1 frame "ahead" of the rest of it.
+The order of the code matters here. If this was placed after the following code, the number would be 1 frame "ahead" of the rest of it. Otherwise, it places the numbers to the left of the end of the bar.
 
 #### Horizontal Movement
 ```
