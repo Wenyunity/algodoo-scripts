@@ -50,7 +50,9 @@ Combined with eval(), this allows me to reuse code for each marble while not usi
         } : {}
     } : {};
 ```
-This piece of code updates where the bars are in their animation using Scene.my.animationTime. e.this.\_start1 is used to determine whether we're on the first frame of the animation and to set SetartTime. After that, Scene.my.animationTime goes from 0 to 1, using Scene.my.numSeconds to determine how long that should take. Once Scene.my.animationTime goes above 1.1 (some delay is necessary), it switches to the vertical swapping section.
+This code handles timing for the first section, updating Scene.my.animationTime from 0 to 1. Once the timing is done, it moves to the next section.
+
+The formula used for timing is (currentTime - startTime) / (duration). This results in a linear movement from 0 to 1. This formula should be changed if a different type of movement is preferred.
 
 #### Vertical Swapping
 ```
