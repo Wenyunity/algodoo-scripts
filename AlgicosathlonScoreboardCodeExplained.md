@@ -6,6 +6,8 @@ This is an explanation of the code behind the Algicosathlon scoreboard.
 
 ## General
 
+I have no idea why, but making objects not glued to background speeds up the scene a lot. So that was done.
+
 ### Naming Conventions
 ```
     e.this._name = math.toString(math.toInt(e.this.colorHSVA(0)) * 10000
@@ -87,7 +89,7 @@ This piece of code updates where the bars are in their animation using Scene.my.
 ```
 Scene.my.done is just a cleanup stage, so it does not need to last for very long. It lasts long enough to get the cleanup message out to the other interested parties, and then it turns itself off.
 
-## Scoreboard Movement
+# Scoreboard Movement
 
 The main chunk of the code is handled by the number on the scoreboard.
 
@@ -100,7 +102,30 @@ The main chunk of the code is handled by the number on the scoreboard.
 - `Scene.my.Beats (+ _name)` holds the place of the athlete after the event.
 - `e.this._originalY` holds the place of the athlete before the event.
 
-### Code
+## Code
+
+The code for this section is loaded in three parts.
+
+Scene.my.waitForAnimation -> Scene.my.horizontalAnimation -> Scene.my.verticalAnimation -> Scene.my.waitForAnimation.
+
+## Scene.my.waitForAnimation
+
+This part waits for the animation to happen.
+
+There is positioning code here, although it is not 100% necessary.
+
+#### Waiting Code
+
+```
+        Scene.my.playAnimation ? {
+            e.this.postStep = Scene.my.horizontalAnimation
+        } : {}
+```
+Waits for playAnimation before swapping the postStep to a more heavy one.
+
+## Scene.my.HorizontalMovement
+
+This part handles the horizontal animation.
 
 #### Text
 ```
@@ -131,7 +156,6 @@ The order of the code matters here. If this was placed after the following code,
 
 #### Horizontal Movement
 ```
-    Scene.my.playAnimation ? {
         e.this.text = "<markup><b>" + Math.toString(Math.toInt(eval("Scene.my.Display" + e.this._name))) + "</b></markup>";
         Scene.my.animationTime < 1 ? {
             eval("Scene.my.Display" + e.this._name + " = (Scene.my.Initial" + e.this._name + " * (1.0 - Scene.my.animationTime)) +  (Scene.my.Point" + e.this._name + " * (Scene.my.animationTime))")
@@ -140,28 +164,42 @@ The order of the code matters here. If this was placed after the following code,
         }
     } : {};
 ```
-The first line in this if statement updates the text. Since this is the only time the text needs updating, it can safely be placed here without worry.
+The first line in this statement updates the text. Since this is the only time the text needs updating, it is only present in the horizontal movement section.
 
 Scene.my.Display is calculated as follows: Initial * (1 - animationTime) + Point * (animationTime). This means, when the animation has begun (animationTime = 0), it'll be at the Initial position, while when the animation is over (animationTime = 1), it'll be at the Point position. In between, it takes the proper ratio between the two positions.
 
+#### Switch Code
+```
+        Scene.my.playSwap ? {
+            e.this.postStep = Scene.my.verticalAnimation
+        } : {}
+```
+When the horizontal animation is done, the postStep is switched to the verticalAnimation.
+
+## Scene.my.verticalMovement
+
+This handles the vertical movement.
+
+The positioning code from above is in this section.
+
 #### Vertical Movement
 ```
-    Scene.my.playSwap ? {
         Scene.my.animationTime < 1 ? {
             eval("Scene.my.Current" + e.this._name + " = ((e.this._originalY) * (1.0 - Scene.my.animationTime2)) +  ((Scene.my.Beats" + e.this._name + ") * (Scene.my.animationTime2))")
         } : {
             eval("Scene.my.Current" + e.this._name + " = Scene.my.Beats" + e.this._name)
         }
-    } : {};
 ```
 The vertical movement is calculated in the exact same way as the horizontal movement and makes for linear movement between the starting position and the desired finishing position.
 
 #### Cleanup
 ```
-    Scene.my.done ? {
-        e.this._originalY = e.this.pos(1);
-        eval("Scene.my.Current" + e.this._name + " = e.this.pos(1)")
-    } : {}
+        Scene.my.done ? {
+            e.this._originalY = e.this.pos(1);
+            eval("Scene.my.Current" + e.this._name + " = e.this.pos(1)");
+            e.this.postStep = Scene.my.waitForAnimation
+        } : {}
+    }
 ```
 Setting variables up that will be used for future runs.
 
