@@ -131,30 +131,46 @@ This part handles the horizontal animation.
 
 #### Text
 ```
-    eval("Scene.my.Display" + e.this._name) < 10 ? {
-        e.this.size = [1.1, 1]
-    } : {
-        eval("Scene.my.Display" + e.this._name) < 100 ? {
-            e.this.size = [1.7, 1]
-        } : {
-            eval("Scene.my.Display" + e.this._name) < 1000 ? {
-                e.this.size = [2.3, 1]
+        eval("Scene.my.Display" + e.this._name) > (-1) ? {
+            eval("Scene.my.Display" + e.this._name) < 10 ? {
+                e.this.size = [1.1, 1]
             } : {
-                e.this.size = [2.9, 1]
+                eval("Scene.my.Display" + e.this._name) < 100 ? {
+                    e.this.size = [1.7, 1]
+                } : {
+                    eval("Scene.my.Display" + e.this._name) < 1000 ? {
+                        e.this.size = [2.3, 1]
+                    } : {
+                        e.this.size = [2.9, 1]
+                    }
+                }
             }
-        }
-    };
-    textScale = 1.1;
+        } : {
+            eval("Scene.my.Display" + e.this._name) > (-10) ? {
+                e.this.size = [1.7, 1]
+            } : {
+                e.this.size = [2.3, 1]
+            }
+        };
+        textScale = 1.1;
 ```
 In order to simulate right-align text the best I could, I change the size of the text bar when more digits are necessary.
+
+The bottom deals with negative numbers up to -99.
 
 textScale is a fallback incase switching digits causes the text size to decrease; it will increase the size back.
 
 #### Position
 ```
-    eval("e.this.pos = [Scene.my.finishSize*(Scene.my.Display" + e.this._name + ")/ (Scene.my.finishScore * 1.0), Scene.my.Current" + e.this._name + "] - [e.this.size(0) / 2, 0]");
+        eval("Scene.my.Display" + e.this._name) > 0 ? {
+            eval("e.this.pos = [Scene.my.finishSize*(Scene.my.Display" + e.this._name + ")/ (Scene.my.finishScore * 1.0), Scene.my.Current" + e.this._name + "] - [e.this.size(0) / 2, 0]")
+        } : {
+            eval("e.this.pos = [0, Scene.my.Current" + e.this._name + "] - [e.this.size(0) / 2, 0]")
+        };
 ```
 The order of the code matters here. If this was placed after the following code, the number would be 1 frame "ahead" of the rest of it. Otherwise, it places the numbers to the left of the end of the bar.
+
+The positioning code also has a fallback for negative scores, so the numbers do not fly off the left.
 
 #### Horizontal Movement
 ```
@@ -207,16 +223,24 @@ Setting variables up that will be used for future runs.
 
 ### Namebar Code
 ```
-    eval("e.this.pos = [Scene.my.finishSize*(Scene.my.Display" + e.this._name + ")/ (Scene.my.finishScore * 1.0), Scene.my.Current" + e.this._name + "] + [e.this.size(0) / 2, 0]")
+    eval("Scene.my.Display" + e.this._name) > 0 ? {
+        eval("e.this.pos = [Scene.my.finishSize*(Scene.my.Display" + e.this._name + ")/ (Scene.my.finishScore * 1.0), Scene.my.Current" + e.this._name + "] + [e.this.size(0) / 2, 0]")
+    } : {
+        eval("e.this.pos = [0, Scene.my.Current" + e.this._name + "] + [e.this.size(0) / 2, 0]")
+    }
 ```
 This is the exact same as the number's positioning code except we place it to the right by adding half of the X-size instead of subtracting half of it.
 
 ### Bar Code
 ```
-   eval("e.this.size = [1 + Scene.my.finishSize*(Scene.my.Display" + e.this._name + ")/ (Scene.my.finishScore * 1.0), e.this.size(1)]");
+    eval("Scene.my.Display" + e.this._name) > (-1) ? {
+        eval("e.this.size = [1 + Scene.my.finishSize*(Scene.my.Display" + e.this._name + ")/ (Scene.my.finishScore * 1.0), e.this.size(1)]")
+    } : {};
     eval("e.this.pos = [- 0.5 + (Scene.my.finishSize * Scene.my.Display" + e.this._name + " * 1.0) / (Scene.my.finishScore * 2.0), Scene.my.Current" + e.this._name + "]")
 ```
 The size code and the positioning code combine such that the bar looks like it's only increasing from the right side. The multiplication by 1.0 and 2.0 are to prevent integer division from happening.
+
+There is negative handling for the size but not for the position; the latter is not entirely necessary as the position display is hidden behind the placement text.
 
 ## Sorter
 
@@ -251,7 +275,7 @@ The last line of code just moves the marble down to the next sorter.
 
 ### Code
 ```
-    e.other.pos = e.other.pos - [0, 3];
+    e.other.pos = [e.other.pos(0), Scene.my.neededY];
     eval("Scene.my.Point" + e.other._name + " = Scene.my.Point" + e.other._name + " + " + e.this._pointGain);
     eval("Scene.my.Point" + e.other._name) > Scene.my.finishScore ? {
         Scene.my.finishScore = eval("Scene.my.Point" + e.other._name)
