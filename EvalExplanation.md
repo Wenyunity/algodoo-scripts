@@ -104,7 +104,7 @@ And, since nothing needs to change, we can also put this whole long piece of cod
     }
 ```
 
-This allows the ability to select all of the blocks, and then in the top-left box of the scripting menu, type in `e.this.postStep = Scene.my.verticalAnimation` and it'll automatically put all of that code in.
+This allows the ability to select all of the blocks, and then type in `e.this.postStep = Scene.my.verticalAnimation` in the top-left box of the scripting menu. It'll automatically put all of that code in each block.
 
 ## Limitations
 
@@ -133,6 +133,14 @@ eval("Scene.my.Score" + e.other._name) == 10
 eval("Scene.my.ScoreRed") == 10
 5 == 10
 false
+```
+
+Do note that putting the eval on the other side does work, even if this example is a little bit silly:
+
+```
+e.this.collideSet = eval("Scene.my.Score" + e.other._name)
+e.this.collideSet = eval("Scene.my.ScoreRed")
+e.this.collideSet = 5
 ```
 
 In order to set a marble's score to 10, this is necessary:
