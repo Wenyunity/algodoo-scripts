@@ -125,7 +125,7 @@ There is positioning code here, although it is not 100% necessary.
 ```
 Waits for playAnimation before swapping the postStep to a more heavy one.
 
-## Scene.my.HorizontalMovement
+## Scene.my.HorizontalAnimation
 
 This part handles the horizontal animation.
 
@@ -194,7 +194,7 @@ Scene.my.Display is calculated as follows: Initial * (1 - animationTime) + Point
 ```
 When the horizontal animation is done, the postStep is switched to the verticalAnimation.
 
-## Scene.my.verticalMovement
+## Scene.my.verticalAnimation
 
 This handles the vertical movement.
 
