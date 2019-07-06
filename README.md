@@ -1,4 +1,4 @@
-# algodoo-eval-scoreboard
+# algodoo-scoreboard
 
 Snippets of Algodoo code used by WuigiBaka will be posted here.
 
