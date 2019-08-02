@@ -83,3 +83,9 @@ e.this._name = math.toString(math.toInt(e.this.colorHSVA(0)) * 10000 + math.toIn
 Can be used if your marbles are not named. Putting this in OnSpawn will automatically name your marbles and scoreboard, so long as the scoreboard's color is the same as the marble's color.
 
 Notes: Using HSVA -> S = 0 or 1, as well as V = 0 or 1 with the same H will cause name collisions. A (Transparency) is not factored in to the automatic naming, so changing only A will cause name collisions.
+
+# A Note About Eval
+
+eval is a very powerful function. In Algodoo, there's not much of a problem using eval, since the code run in a scene is mostly limited to the program itself, and **you, as the codewriter** choose what is run by eval. Basically, if eval goes wrong in Algodoo, the worst that can happen (for the most part) is that the program crashes. 
+
+However; in other programming languages, **eval is not recommended.** This is because the code run through eval may not be entirely chosen by you. If there is any possibility of outside user input, do not use eval.
